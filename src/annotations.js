@@ -4,7 +4,7 @@ async function fetchAnnotations(target, outgoingHeaders, env){
     const songId = match[1];
 
     const cacheKey = `annotations:${songId}`
-    const cached = await env.CACHE_KV.get(cacheKey, {type: "json"});
+    const cached = await env.KV_CACHE.get(cacheKey, {type: "json"});
     if(cached) {
         console.log(`Annotation cache hit for ${target}`)
         return new Response(JSON.stringify(cached), { 
@@ -22,7 +22,7 @@ async function fetchAnnotations(target, outgoingHeaders, env){
 
     const data = await response.json();
     // Cache for 7 days
-    await env.CACHE_KV.put(cacheKey, JSON.stringify(data), {
+    await env.KV_CACHE.put(cacheKey, JSON.stringify(data), {
         expirationTtl: 60 * 60 * 24 * 7,
     });
 

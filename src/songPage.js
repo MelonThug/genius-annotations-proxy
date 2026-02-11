@@ -7,7 +7,7 @@ async function fetchSongPage(target, outgoingHeaders, env){
     const songId = regexMatch[1];
 
     const cacheKey = `song:${songId}`;
-    const cached = await env.CACHE_KV.get(cacheKey, {type: "text"});
+    const cached = await env.KV_CACHE.get(cacheKey, {type: "text"});
     if(cached) {
         console.log(`Song cache hit for ${target}`)
         return new Response(cached, { 
@@ -61,7 +61,7 @@ async function fetchSongPage(target, outgoingHeaders, env){
     let formattedState = `window.__PRELOADED_STATE__ = JSON.parse('${serializedLiteral}');`
 
     // Cache for 7 days
-    await env.CACHE_KV.put(cacheKey, formattedState, {
+    await env.KV_CACHE.put(cacheKey, formattedState, {
         expirationTtl: 60 * 60 * 24 * 7,
     });
 
