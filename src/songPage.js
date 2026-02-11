@@ -35,6 +35,7 @@ async function fetchSongPage(target, outgoingHeaders, env){
     const jsonString = parseJSStringLiteralJSON(jsStringLiteral);
     const preloadedState = JSON.parse(jsonString);
     const annotationKey = Object.keys(preloadedState.entities.annotations)[0]
+    const translations = getTranslations(songId, preloadedState)
 
     const minimalState = {
         songPage: {
@@ -51,7 +52,8 @@ async function fetchSongPage(target, outgoingHeaders, env){
                         html: preloadedState.entities.annotations[annotationKey].body.html
                     }
                 }
-            }
+            },
+            songs: translations
         }
     };
 
@@ -67,6 +69,29 @@ async function fetchSongPage(target, outgoingHeaders, env){
         status: response.status, 
         headers: { "Content-Type": "text/html" } 
     });
+}
+
+function getTranslations(id, preloadedState){
+    let translations = {}
+    if(!preloadedState) return translations;
+    
+    const translationKeys = [id, ...preloadedState.entities.songs[id].translationSongs];
+    
+    for(const key of translationKeys){
+        
+        if(parseInt(key) === parseInt(id)){
+            translations[key] = { 
+                language: preloadedState.entities.songs[key].language, 
+                translationSongs: preloadedState.entities.songs[id].translationSongs
+            } 
+        } else {
+            translations[key] = {
+                language: preloadedState.entities.songs[key].language 
+            }
+        }
+    }
+
+    return translations;
 }
 
 export { fetchSongPage }
