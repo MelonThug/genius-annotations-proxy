@@ -1,5 +1,5 @@
-import { parseJSStringLiteralJSON } from "./parsing";
 import { escape } from "safe-string-literal";
+import JSON5 from 'json5'
 
 async function fetchSongPage(target, outgoingHeaders, env){
     const songPageRegex = /^https:\/\/genius\.com\/songs\/(\d+)$/;
@@ -32,7 +32,7 @@ async function fetchSongPage(target, outgoingHeaders, env){
     if (!match) throw new Error("Failed to parse preloaded state");
 
     let jsStringLiteral = match[1];
-    const jsonString = parseJSStringLiteralJSON(jsStringLiteral);
+    const jsonString = JSON5.parse(jsStringLiteral);
     const preloadedState = JSON.parse(jsonString);
     const annotationKey = Object.keys(preloadedState.entities.annotations)[0]
     const translations = getTranslations(songId, preloadedState)

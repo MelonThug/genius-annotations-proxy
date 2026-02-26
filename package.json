@@ -14,6 +14,7 @@
 		"wrangler": "^4.59.1"
 	},
 	"dependencies": {
+		"json5": "^2.2.3",
 		"safe-string-literal": "^1.0.5"
 	}
 }
