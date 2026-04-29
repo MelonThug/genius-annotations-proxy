@@ -61,9 +61,10 @@ async function fetchSongPage(target, outgoingHeaders, env){
     let formattedState = `window.__PRELOADED_STATE__ = JSON.parse('${serializedLiteral}');`
 
     // Cache for 7 days
-    await env.KV_CACHE.put(cacheKey, formattedState, {
-        expirationTtl: 60 * 60 * 24 * 7,
-    });
+    try {
+        await env.KV_CACHE.put(cacheKey, formattedState, { expirationTtl: 60 * 60 * 24 * 7, });
+    } catch (e){ console.error("Error writing state to KV: ", e) }
+    
 
     return new Response(formattedState, { 
         status: response.status, 

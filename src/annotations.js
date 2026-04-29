@@ -22,9 +22,10 @@ async function fetchAnnotations(target, outgoingHeaders, env){
 
     const data = await response.json();
     // Cache for 7 days
-    await env.KV_CACHE.put(cacheKey, JSON.stringify(data), {
-        expirationTtl: 60 * 60 * 24 * 7,
-    });
+    try {
+        await env.KV_CACHE.put(cacheKey, JSON.stringify(data), {expirationTtl: 60 * 60 * 24 * 7, });
+    } catch (e){ console.error("Error writing annotations to KV: ", e) }
+    
 
     return new Response(JSON.stringify(data), { 
         status: response.status, 
