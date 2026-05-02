@@ -24,7 +24,7 @@ async function fetchAnnotations(target, outgoingHeaders, env){
     // Cache for 7 days
     try {
         await env.KV_CACHE.put(cacheKey, JSON.stringify(data), {expirationTtl: 60 * 60 * 24 * 7, });
-    } catch (e){ console.error("Error writing annotations to KV: ", e) }
+    } catch (e){ console.warn("Error writing annotations to KV: ", e) }
     
 
     return new Response(JSON.stringify(data), { 

@@ -63,7 +63,7 @@ async function fetchSongPage(target, outgoingHeaders, env){
     // Cache for 7 days
     try {
         await env.KV_CACHE.put(cacheKey, formattedState, { expirationTtl: 60 * 60 * 24 * 7, });
-    } catch (e){ console.error("Error writing state to KV: ", e) }
+    } catch (e){ console.warn("Error writing state to KV: ", e) }
     
 
     return new Response(formattedState, { 
