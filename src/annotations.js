@@ -1,5 +1,5 @@
 async function fetchAnnotations(target, outgoingHeaders, env){
-    const referentsRegex = /^https:\/\/api\.genius\.com\/referents\?song_id=(\d+)&text_format=plain&per_page=50$/;
+    const referentsRegex = /^https:\/\/api\.genius\.com\/referents\?song_id=(\d+)&text_format=html&per_page=50$/;
     const match = target.match(referentsRegex);
     const songId = match[1];
 
