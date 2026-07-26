@@ -6,7 +6,6 @@ export default {
     async fetch(request, env, ctx) {
         try {
             const url = new URL(request.url);
-
             // Preflight handling
             if (request.method === "OPTIONS") {
                 return cors(
@@ -24,7 +23,7 @@ export default {
             }
 
 			// No URL query param, return proxy status
-            const target = url.searchParams.get("url");
+            const target = decodeURIComponent(url.searchParams.get("url"));
             if (!target) {
                 return cors(
                     new Response(JSON.stringify({ message: "Proxy is running." }, { status: 200 })),
@@ -59,13 +58,14 @@ export default {
             }
 
             const outgoingHeaders = buildOutgoingHeaders(request, env);
+            const clientVersion = url.searchParams.get("clientVersion");
 
             let response;
             if (target.includes("api.genius.com/search")) {
                 response = await search(target, outgoingHeaders, ctx, env);
 
             } else if (target.includes("api.genius.com/referents")) {
-                response = await fetchAnnotations(target, outgoingHeaders, env);
+                response = await fetchAnnotations(target, outgoingHeaders, clientVersion, env);
 
             } else if (target.includes("genius.com/songs")) {
                 response = await fetchSongPage(target, outgoingHeaders, env);
@@ -103,10 +103,12 @@ export default {
 function cors(response, env) {
     const headers = new Headers(response.headers);
     headers.set("Access-Control-Allow-Origin", env.ALLOWED_ORIGIN);
-    headers.set("Access-Control-Allow-Methods", "GET,OPTIONS");
-    headers.set("Access-Control-Allow-Headers", "*");
+    headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
+    headers.set("Access-Control-Allow-Headers", "Content-Type, Client-Version, Authorization");
+    headers.set("Access-Control-Max-Age", "86400")
     return new Response(response.body, {
         status: response.status,
+        statusText: response.statusText,
         headers,
     });
 }
