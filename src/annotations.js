@@ -14,9 +14,9 @@ async function fetchAnnotations(target, outgoingHeaders, clientVersion, env){
     
     const match = target.match(referentsRegex);
     const songId = match[1];
+    const cacheKey = `annotations:${env.CACHE_VERSION}:${songId}`
 
     if(shouldCache){
-        const cacheKey = `annotations:${songId}`
         const cached = await env.KV_CACHE.get(cacheKey, {type: "json"});
         if(cached) {
             console.log(`Annotation cache hit for ${target}`)

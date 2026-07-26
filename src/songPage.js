@@ -6,7 +6,7 @@ async function fetchSongPage(target, outgoingHeaders, env){
     const regexMatch = target.match(songPageRegex);
     const songId = regexMatch[1];
 
-    const cacheKey = `song:${songId}`;
+    const cacheKey = `song:${env.CACHE_VERSION}:${songId}`;
     const cached = await env.KV_CACHE.get(cacheKey, {type: "text"});
     if(cached) {
         console.log(`Song cache hit for ${target}`)
