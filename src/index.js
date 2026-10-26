@@ -20,7 +20,7 @@ export default {
                 );
             }
 
-            const target = decodeURIComponent(url.searchParams.get("url"));
+            const target = url.searchParams.get("url");
             if (!target) {
                 return cors(
                     new Response(JSON.stringify({ message: "Proxy is running." }), { status: 200 }),

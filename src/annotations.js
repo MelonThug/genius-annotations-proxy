@@ -2,6 +2,7 @@ import { compareVersions } from "./util";
 import { geniusFetch } from "./genius";
 
 async function fetchAnnotations(target, outgoingHeaders, clientVersion, env){
+    target = decodeURIComponent(target);
     let referentsRegex;
     const isLegacyClient = !clientVersion || compareVersions(clientVersion, "1.3.1") <= 0;
     let shouldCache = false;

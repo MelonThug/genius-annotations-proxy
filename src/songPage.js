@@ -3,6 +3,7 @@ import { geniusFetch } from "./genius";
 import JSON5 from 'json5'
 
 async function fetchSongPage(target, outgoingHeaders, env){
+    target = decodeURIComponent(target);
     const songPageRegex = /^https:\/\/genius\.com\/songs\/(\d+)$/;
     const regexMatch = target.match(songPageRegex);
     const songId = regexMatch[1];
