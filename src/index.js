@@ -6,15 +6,13 @@ export default {
     async fetch(request, env, ctx) {
         try {
             const url = new URL(request.url);
+
             // Preflight handling
             if (request.method === "OPTIONS") {
-                return cors(
-					new Response(null, { status: 204 }), 
-					env
-				);
+                return cors(new Response(null, { status: 204 }), env);
             }
 
-			// Invalid method
+            // Invalid method
             if (request.method !== "GET") {
                 return cors(
                     new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405 }),
@@ -22,16 +20,15 @@ export default {
                 );
             }
 
-			// No URL query param, return proxy status
             const target = decodeURIComponent(url.searchParams.get("url"));
             if (!target) {
                 return cors(
-                    new Response(JSON.stringify({ message: "Proxy is running." }, { status: 200 })),
+                    new Response(JSON.stringify({ message: "Proxy is running." }), { status: 200 }),
                     env
                 );
             }
 
-			// Invalid URL
+            // Invalid URL
             if (!/^https?:\/\//i.test(target)) {
                 return cors(
                     new Response(JSON.stringify({ error: "Invalid target URL" }), { status: 400 }),
@@ -39,7 +36,7 @@ export default {
                 );
             }
 
-			// Disallowed origin
+            // Disallowed origin
             const origin = request.headers.get("origin");
             if (origin && origin !== env.ALLOWED_ORIGIN) {
                 return cors(
@@ -48,7 +45,7 @@ export default {
                 );
             }
 
-			// Disallowed target
+            // Disallowed target
             const hostname = new URL(target).hostname.toLowerCase();
             if (!env.ALLOWED_HOSTS.includes(hostname)) {
                 return cors(
@@ -105,7 +102,7 @@ function cors(response, env) {
     headers.set("Access-Control-Allow-Origin", env.ALLOWED_ORIGIN);
     headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
     headers.set("Access-Control-Allow-Headers", "Content-Type, Client-Version, Authorization");
-    headers.set("Access-Control-Max-Age", "86400")
+    headers.set("Access-Control-Max-Age", "86400");
     return new Response(response.body, {
         status: response.status,
         statusText: response.statusText,
@@ -124,4 +121,3 @@ function buildOutgoingHeaders(request, env) {
     if (env.ACCESS_TOKEN) headers.set("Authorization", `Bearer ${env.ACCESS_TOKEN}`);
     return headers;
 }
-
