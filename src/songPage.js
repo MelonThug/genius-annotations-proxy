@@ -1,5 +1,4 @@
 import { escape } from "safe-string-literal";
-import { geniusFetch } from "./genius";
 import JSON5 from 'json5'
 
 async function fetchSongPage(target, outgoingHeaders, env){
@@ -18,8 +17,9 @@ async function fetchSongPage(target, outgoingHeaders, env){
         });
     }
 
-    const response = await geniusFetch(target, outgoingHeaders, {
+    const response = await fetch(target, {
 		method: "GET",
+        headers: outgoingHeaders,
 		redirect: "follow",
 	});
     if (!response.ok) throw new Error(`Failed to fetch ${target}: ${response.status}`);

@@ -1,5 +1,4 @@
 import { compareVersions } from "./util";
-import { geniusFetch } from "./genius";
 
 async function fetchAnnotations(target, outgoingHeaders, clientVersion, env){
     target = decodeURIComponent(target);
@@ -29,8 +28,9 @@ async function fetchAnnotations(target, outgoingHeaders, clientVersion, env){
         }
     }
 
-    const response = await geniusFetch(target, outgoingHeaders, {
+    const response = await fetch(target, {
 		method: "GET",
+        headers: outgoingHeaders,
 		redirect: "follow",
 	});
     if (!response.ok) throw new Error(`Failed to fetch ${target}: ${response.status}`);

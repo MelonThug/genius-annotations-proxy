@@ -1,5 +1,3 @@
-import { geniusFetch } from "./genius";
-
 async function search(target, outgoingHeaders, ctx, env) {
     const searchRegex = /^https:\/\/api\.genius\.com\/search\?q=(.+)$/;
     const match = target.match(searchRegex);
@@ -17,10 +15,11 @@ async function search(target, outgoingHeaders, ctx, env) {
         return cached;
     }
 
-    const response = await geniusFetch(target, outgoingHeaders, {
-        method: "GET",
-        redirect: "follow",
-    });
+    const response = await fetch(target, {
+		method: "GET",
+        headers: outgoingHeaders,
+		redirect: "follow",
+	});
     if (!response.ok) throw new Error(`Failed to fetch ${target}: ${response.status}`);
 
     const data = await response.json();
